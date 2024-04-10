@@ -35,7 +35,15 @@ impl TodoList {
     }
 
     fn mark_done(&mut self, index: usize) {
-        self.list[index].completed = 'x'
+        if self.list[index].completed == ' ' {
+            self.list[index].completed = 'x'
+        } else {
+            self.list[index].completed = ' ';
+        }
+    }
+
+    fn remove_task(&mut self, index: usize) {
+        self.list.remove(index);
     }
 }
 
@@ -43,6 +51,7 @@ enum Command {
     Get,
     Add(String),
     Done(usize),
+    Remove(usize),
 }
 
 fn main() {
@@ -53,11 +62,13 @@ fn main() {
         "get" => Command::Get,
         "add" => Command::Add(arguments[2].clone()),
         "done" => Command::Done(arguments[2].parse().expect("Error converting to integer")),
+        "remove" => Command::Remove(arguments[2].parse().expect("Error parsing for a remove")),
         _ => panic!("Please provide an accepted argument"),
     };
 
     todo_list.add_to_list("Say hi to Remmy".to_string());
     todo_list.add_to_list("Do something with Rust.".to_string());
+    todo_list.mark_done(1);
 
     match command {
         Command::Get => todo_list.print(),
@@ -67,6 +78,10 @@ fn main() {
         }
         Command::Done(index) => {
             todo_list.mark_done(index);
+            todo_list.print();
+        }
+        Command::Remove(index) => {
+            todo_list.remove_task(index);
             todo_list.print();
         }
     }
